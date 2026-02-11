@@ -1,21 +1,23 @@
-#python
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import List
 
-from db.session import get_db, check_db_health, init_db
+from db.session import get_db, check_db_health
+from db.init_db import init_db
 from db import crud, models
 from db.schemas import User, UserCreate, UserUpdate, UserProfile, UserProfileCreate
-
-# Initialize database tables
-init_db()
 
 app = FastAPI(
     title="User Management API",
     description="FastAPI + SQLAlchemy integration with SQLite3",
     version="1.0.0"
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 
 # Health check endpoint
